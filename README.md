@@ -7,3 +7,11 @@
 1. new trapezoid mask added
 1. 7x raw variable shape pixel output and shrink to 2,3,4x for smooth viewing
 1. not so slow throughput
+
+## Requirements
+
+Processor impliments Double precision floating point number
+C compiler
+Standard C Library
+C math Library
+[libgd](https://libgd.github.io) Graphic library
