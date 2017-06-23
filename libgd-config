@@ -1,0 +1,3 @@
+#!/bin/sh
+
+[[ "$1" == "--libs" ]] && echo '-lgd -lpng -lz -ljpeg -lfreetype -lm'
