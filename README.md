@@ -10,8 +10,8 @@
 
 ## Requirements
 
-Processor impliments Double precision floating point number
-C compiler
-Standard C Library
-C math Library
-[libgd](https://libgd.github.io) Graphic library
+1. Processor impliments Double precision floating point number
+1. C compiler
+1. Standard C Library
+1. C math Library
+1. [libgd](https://libgd.github.io) Graphic library
