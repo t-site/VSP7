@@ -28,19 +28,19 @@ vsp7a 2-4x output can used by cascade for more enlarge.
 no 'blobs' and square block noise found like GIMP's lanzcos3.
 but so slow.
 
-'''bash:cascade.sh
+```bash:cascade.sh
 
 vsp7a 3 input.jpg 3x.gd
 vsp7a 3 3x.gd 9x.gd
 vsp7a 3 9x.gd 27x.png
-'''
+```
 
 vsp7a 1x output for eliminate particle noise in JPEG image.
 Dont forget, specify a lossless image format for output.
 
-'''bash:jpeg-clean.sh
+```bash:jpeg-clean.sh
 vsp7a 1 input.jpg output.png
-'''
+```
 
 
 ## Requirements
