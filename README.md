@@ -5,7 +5,8 @@ vsp7a as an image enlarger.
 ## improvement feature
 
 1. 7x7 kernel,bold center pixel
-1. Color combined from 3x3 neiborhood
+1. 7x7 kernel from 3x3 neighborhood using bilinear , good for 'mosaic' pixels
+1. Color combined from 3x3 neighborhood
 1. inverse square law of lay implement
 1. new trapezoid masks added
 1. 7x raw variable shape pixel output and shrink to 2,3,4x for smooth viewing
@@ -22,7 +23,7 @@ and I say Variable Shape Pixels likes no other.
 I tuned VSP7 for Oiran image. recommend for nature and traditional design,Photograph contents. not for anime.
 
 Variable Shape Pixels maybe eliminate noise in lossy image formats.
-lossless image formats recommend for output.
+lossless image formats recommended for output.
 
 vsp7a 2-4x output can used by cascade for more enlarge.
 no 'blobs' and square block noise found like GIMP's lanzcos3.
@@ -50,3 +51,9 @@ vsp7a 1 input.jpg output.png
 1. Standard C Library
 1. C math Library
 1. [libgd](https://libgd.github.io) Graphic library
+
+## TODO
+
+1. Ultrafast mask algolithm using CPU caches ( 49x faster )
+1. Gaussian blur for 7x output
+1. multi thread
