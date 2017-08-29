@@ -447,8 +447,8 @@ void pixel_weight_matrix_calc(void)
 		for ( x = 0 ; x <= HALF_MASK ; x++)
 		{
 			double weight,fx,fy;
-            fx = 1.0 + (double)x / 3 * 3.5 ;
-            fy = 1.0 + (double)y / 3 * 3.5 ;
+            fx = 1.0 + (double)x  ;
+            fy = 1.0 + (double)y  ;
 			weight = 1.0 / (fx*fx + fy*fy);
 			pixel_weight[HALF_MASK + y][HALF_MASK + x]=weight;
 			pixel_weight[HALF_MASK + y][HALF_MASK - x]=weight;
