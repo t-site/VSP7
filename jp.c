@@ -128,24 +128,7 @@ gdImagePtr juggyplow( gdImagePtr input_image )
 			int blues[2];
 			int x,y;
 			gdImagePtr matrix37;
-			for ( y = 0, i = input_y - HALF_MASK ;  y < MASK_SIZE ; i ++ ,y++ )
-			{
-				for ( x = 0, j = input_x - HALF_MASK ; x < MASK_SIZE ; j++ ,x++ )
-				{
-					int pixel;
 
-					pixel=gdImageGetTrueColorPixel(input_image,j,i);
-					red_matrix[y][x]=gdImageRed(output_image,pixel);
-					green_matrix[y][x]=gdImageGreen(output_image,pixel);
-					blue_matrix[y][x]=gdImageBlue(output_image,pixel);
-
-				}
-			}
-
-			red_correct_mask = juggyplow_correct_mask(red_matrix);
-			green_correct_mask = juggyplow_correct_mask(green_matrix);
-			blue_correct_mask = juggyplow_correct_mask(blue_matrix);
-            
 
 			gdImageCopy(matrix_from3,input_image,0,0,(input_x-1) , (input_y -1),3,3);
 
@@ -163,6 +146,11 @@ gdImagePtr juggyplow( gdImagePtr input_image )
 				}
 			}
 			gdImageDestroy(matrix37);
+
+			red_correct_mask = juggyplow_correct_mask(red_by3);
+			green_correct_mask = juggyplow_correct_mask(green_by3);
+			blue_correct_mask = juggyplow_correct_mask(blue_by3);
+           
 
 			juggyplow_blight_apply( red_correct_mask , red_by3 , reds );
 
