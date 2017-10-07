@@ -69,6 +69,24 @@ int masks [][MASK_SIZE][MASK_SIZE] = {
 		{0,0,0,M,M,M,M}
 	},
 	{
+		{0,0,M,M,M,M,M},
+		{0,0,M,M,M,M,M},
+		{0,0,0,M,M,M,M},
+		{0,0,0,M,M,M,M},
+		{0,0,0,M,M,M,M},
+		{0,0,0,0,M,M,M},
+		{0,0,0,0,M,M,M}
+	},
+	{
+		{0,0,0,0,M,M,M},
+		{0,0,0,M,M,M,M},
+		{0,0,0,M,M,M,M},
+		{0,0,0,M,M,M,M},
+		{0,0,0,M,M,M,M},
+		{0,0,M,M,M,M,M},
+		{0,0,M,M,M,M,M}
+	},
+	{
 		{0,0,0,0,0,0,M},
 		{0,0,0,0,0,M,M},
 		{0,0,0,0,M,M,M},
@@ -88,15 +106,6 @@ int masks [][MASK_SIZE][MASK_SIZE] = {
 		{0,0,0,0,0,0,M}
 	},
 	{
-		{0,0,0,M,M,M,M},
-		{0,0,0,M,M,M,M},
-		{0,0,0,0,M,M,M},
-		{0,0,0,0,M,M,M},
-		{0,0,0,0,M,M,M},
-		{0,0,0,0,0,M,M},
-		{0,0,0,0,0,M,M}
-	},
-	{
 		{M,M,M,M,M,M,M},
 		{M,M,M,M,M,M,M},
 		{M,M,M,M,M,M,M},
@@ -104,15 +113,6 @@ int masks [][MASK_SIZE][MASK_SIZE] = {
 		{M,M,0,0,0,0,0},
 		{0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0}
-	},
-	{
-		{M,M,M,M,0,0,0},
-		{M,M,M,M,0,0,0},
-		{M,M,M,0,0,0,0},
-		{M,M,M,0,0,0,0},
-		{M,M,M,0,0,0,0},
-		{M,M,0,0,0,0,0},
-		{M,M,0,0,0,0,0}
 	},
 	{
 		{0,0,0,0,0,0,0},
@@ -447,9 +447,9 @@ void pixel_weight_matrix_calc(void)
 		for ( x = 0 ; x <= HALF_MASK ; x++)
 		{
 			double weight,fx,fy;
-            fx = 1.0 + (double)x  ;
-            fy = 1.0 + (double)y  ;
-			weight = 1.0 / (fx*fx + fy*fy);
+            fx = ( 1.0 + (double)x );
+            fy = ( 1.0 + (double)y );
+			weight = 1.0 / ( pow(fx,fx) + pow(fy,fy) );
 			pixel_weight[HALF_MASK + y][HALF_MASK + x]=weight;
 			pixel_weight[HALF_MASK + y][HALF_MASK - x]=weight;
 			pixel_weight[HALF_MASK - y][HALF_MASK + x]=weight;
@@ -459,14 +459,14 @@ void pixel_weight_matrix_calc(void)
 	pixel_weight[HALF_MASK][HALF_MASK]=0.0;
 }
 
-struct pixel_weight {
+struct masks_weight {
 	int A;
 	int B;
 	double A_weight;
 	double B_weight;
 };
 
-struct pixel_weight pixel_weight_list[MASK_COUNT];
+struct masks_weight masks_weight_list[MASK_COUNT];
 
 void pixel_weight_all_calc(void)
 {
@@ -474,10 +474,10 @@ void pixel_weight_all_calc(void)
 	for ( i=0; i < MASK_COUNT ; i++)
 	{
 		
-		pixel_weight_list[i].A=0;
-		pixel_weight_list[i].B=0;
-		pixel_weight_list[i].A_weight=0.0;
-		pixel_weight_list[i].B_weight=0.0;
+		masks_weight_list[i].A=0;
+		masks_weight_list[i].B=0;
+		masks_weight_list[i].A_weight=0.0;
+		masks_weight_list[i].B_weight=0.0;
 		
 		for ( j=0; j < MASK_SIZE ; j++)
 		{
@@ -485,11 +485,11 @@ void pixel_weight_all_calc(void)
 			{
 				if( masks[i][j][k] )
 				{
-					pixel_weight_list[i].A++;
-					pixel_weight_list[i].A_weight+=pixel_weight[j][k];
+					masks_weight_list[i].A++;
+					masks_weight_list[i].A_weight+=pixel_weight[j][k];
 				}else {
-					pixel_weight_list[i].B++;
-					pixel_weight_list[i].B_weight+=pixel_weight[j][k];					
+					masks_weight_list[i].B++;
+					masks_weight_list[i].B_weight+=pixel_weight[j][k];					
 				}
 			}
 		}

@@ -24,14 +24,11 @@ SOFTWARE.
 
 #include"masks.h"
 #include<gd.h>
-static	int red_matrix[MASK_SIZE][MASK_SIZE];
-static	int green_matrix[MASK_SIZE][MASK_SIZE];
-static	int blue_matrix[MASK_SIZE][MASK_SIZE];
 
 		
-static	int red_by3[MASK_SIZE][MASK_SIZE];
-static	int green_by3[MASK_SIZE][MASK_SIZE];
-static	int blue_by3[MASK_SIZE][MASK_SIZE];
+static	int red_pick[MASK_SIZE][MASK_SIZE];
+static	int green_pick[MASK_SIZE][MASK_SIZE];
+static	int blue_pick[MASK_SIZE][MASK_SIZE];
 
 static int juggyplow_correct_mask ( const int matrix[][MASK_SIZE] )
 {
@@ -41,24 +38,21 @@ static int juggyplow_correct_mask ( const int matrix[][MASK_SIZE] )
 	for ( i = 0 ; i < MASK_COUNT ; i++ )
 	{
 		double diff;
-		int A_count=0,B_count=0;
+		double A_count=0,B_count=0;
 		for ( j = 0; j < MASK_SIZE ; j++ )
 		{
 			for ( k = 0; k < MASK_SIZE ; k++ )
 			{
-				int pixel;
-				pixel = matrix[j][k];
+				double pixel;
+				pixel = (double)matrix[j][k];
 
-				if(masks[i][j][k])
-				{
-					A_count += (masks[i][j][k]) & pixel ;
-				}else
-				{
-					B_count += (~ masks[i][j][k]) & pixel ;
-				}
+				if (masks[i][j][k])
+					A_count += ( pixel * pixel_weight[j][k] ) ;
+				else
+					B_count += ( pixel * pixel_weight[j][k] ) ;
 			}
 		}
-		diff = fabs(( (double)A_count / (double)pixel_weight_list[i].A ) - ( (double)B_count / (double)pixel_weight_list[i].B )) ;
+		diff = fabs(( A_count / masks_weight_list[i].A_weight ) - ( B_count / masks_weight_list[i].B_weight )) ;
 		if( diff_max < diff )
 		{
 			diff_max = diff;
@@ -91,9 +85,9 @@ static void juggyplow_blight_apply( const int correct_mask , const int matrix[][
 		}
 	}
 	
-	a_b[0] = (int)(A_all_f / (1.0+pixel_weight_list[correct_mask].A_weight)) ;
-	a_b[1] = (int)(B_all_f / (1.0+pixel_weight_list[correct_mask].B_weight)) ;
-}		
+	a_b[0] = (int)(A_all_f / (1.0+masks_weight_list[correct_mask].A_weight)) ;
+	a_b[1] = (int)(B_all_f / (1.0+masks_weight_list[correct_mask].B_weight)) ;
+}
 
 gdImagePtr juggyplow( gdImagePtr input_image )
 {
@@ -104,7 +98,6 @@ gdImagePtr juggyplow( gdImagePtr input_image )
 	int InputImageSY;
 	int input_x;
 	int input_y;
-	gdImagePtr matrix_from3;
 	
 	InputImageSX = gdImageSX(input_image) ;
 	InputImageSY = gdImageSY(input_image) ;
@@ -113,8 +106,6 @@ gdImagePtr juggyplow( gdImagePtr input_image )
 	pixel_weight_matrix_calc();
 	pixel_weight_all_calc();
 	output_image = gdImageCreateTrueColor(OutputImageSX,OutputImageSY);
-	matrix_from3 = gdImageCreateTrueColor(3,3);
-	gdImageSetInterpolationMethod(matrix_from3,GD_LINEAR);
 	for ( input_y = 0 ; input_y < InputImageSY ; input_y++ )
 	{
 		for ( input_x = 0 ; input_x < InputImageSX ; input_x++ )
@@ -127,36 +118,32 @@ gdImagePtr juggyplow( gdImagePtr input_image )
 			int greens[2];
 			int blues[2];
 			int x,y;
-			gdImagePtr matrix37;
 
-
-			gdImageCopy(matrix_from3,input_image,0,0,(input_x-1) , (input_y -1),3,3);
-
-            matrix37 = gdImageScale(matrix_from3,MASK_SIZE,MASK_SIZE);
 			for( i = 0; i < MASK_SIZE ; i++)
 			{
+				y = input_y - HALF_MASK + i ;
 				for( j=0 ; j < MASK_SIZE ; j++)
 				{
+					x = input_x - HALF_MASK + j ;
 					int pixel;
 
-					pixel=gdImageGetTrueColorPixel(matrix37,j,i);
-					red_by3[i][j]=gdImageRed(matrix37,pixel);
-					green_by3[i][j]=gdImageGreen(matrix37,pixel);
-					blue_by3[i][j]=gdImageBlue(matrix37,pixel);
+					pixel=gdImageGetTrueColorPixel(input_image,x,y);
+					red_pick[i][j]=gdImageRed(input_image,pixel);
+					green_pick[i][j]=gdImageGreen(input_image,pixel);
+					blue_pick[i][j]=gdImageBlue(input_image,pixel);
 				}
 			}
-			gdImageDestroy(matrix37);
 
-			red_correct_mask = juggyplow_correct_mask(red_by3);
-			green_correct_mask = juggyplow_correct_mask(green_by3);
-			blue_correct_mask = juggyplow_correct_mask(blue_by3);
+			red_correct_mask = juggyplow_correct_mask(red_pick);
+			green_correct_mask = juggyplow_correct_mask(green_pick);
+			blue_correct_mask = juggyplow_correct_mask(blue_pick);
            
 
-			juggyplow_blight_apply( red_correct_mask , red_by3 , reds );
+			juggyplow_blight_apply( red_correct_mask , red_pick , reds );
 
-			juggyplow_blight_apply( green_correct_mask , green_by3 , greens );
+			juggyplow_blight_apply( green_correct_mask , green_pick , greens );
 
-			juggyplow_blight_apply( blue_correct_mask , blue_by3 , blues );
+			juggyplow_blight_apply( blue_correct_mask , blue_pick , blues );
 			
 			for( k = 0 ; k < MASK_SIZE ; k++ )
 			{
@@ -188,6 +175,5 @@ gdImagePtr juggyplow( gdImagePtr input_image )
 			}
 		}
 	}
-    gdImageDestroy(matrix_from3);
 	return output_image;
 }
