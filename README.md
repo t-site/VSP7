@@ -34,9 +34,8 @@ vsp7a 3 3x.gd 9x.gd
 vsp7a 3 9x.gd 27x.png
 ```
 
-vsp7a 1x output for eliminate particle noise in JPEG image.
-Dont forget, specify a lossless image format for output.
-
+NOTICE: current VSP7, jpeg noise eliminate function is lost.
+git-55170a8 for use this function. but slow.
 ```bash:jpeg-clean.sh
 vsp7a 1 input.jpg output.png
 ```
