@@ -124,13 +124,13 @@ gdImagePtr juggyplow( gdImagePtr input_image )
 				y = input_y - HALF_MASK + i ;
 				for( j=0 ; j < MASK_SIZE ; j++)
 				{
-					x = input_x - HALF_MASK + j ;
 					int pixel;
+					x = input_x - HALF_MASK + j ;
 
-					pixel=gdImageGetTrueColorPixel(input_image,x,y);
-					red_pick[i][j]=gdImageRed(input_image,pixel);
-					green_pick[i][j]=gdImageGreen(input_image,pixel);
-					blue_pick[i][j]=gdImageBlue(input_image,pixel);
+					pixel=gdImageGetTrueColorPixel( input_image , x , y);
+					red_pick[i][j]=gdTrueColorGetRed( pixel );
+					green_pick[i][j]=gdTrueColorGetGreen( pixel );
+					blue_pick[i][j]=gdTrueColorGetBlue( pixel );
 				}
 			}
 
